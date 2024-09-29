@@ -2,6 +2,7 @@ import os
 from openai import OpenAI
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
+from slim_ia_data import SlimIAData  # Importa a nova classe
 
 # Configurar os tokens a partir das variáveis de ambiente
 API_GITHUB_TOKEN = os.getenv("API_GITHUB_TOKEN")
@@ -16,11 +17,15 @@ client = OpenAI(
     api_key=API_GITHUB_TOKEN,
 )
 
+# Instancia a classe que contém as informações
+slim_ia_data = SlimIAData()
+
 async def get_openai_response(message: str) -> str:
     try:
+        # Usa a informação da SLIM IA para responder
         response = client.chat.completions.create(
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "system", "content": slim_ia_data.get_all_info()},
                 {"role": "user", "content": message},
             ],
             temperature=1.0,
@@ -33,7 +38,7 @@ async def get_openai_response(message: str) -> str:
         return f"Desculpe, houve um erro: {str(e)}"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text('Olá! Eu sou seu assistente. Como posso ajudá-lo hoje?')
+    await update.message.reply_text('Olá! Eu sou a SLIM IA, sua assistente. Como posso ajudá-lo hoje?')
 
 async def respond(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_message = update.message.text
