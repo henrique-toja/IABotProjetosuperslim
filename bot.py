@@ -1,34 +1,42 @@
 import os
-import openai
+from openai import OpenAI
+
+token = os.environ["API_GITHUB_TOKEN"]
+endpoint = "https://models.inference.ai.azure.com"
+model_name = "gpt-4o-mini"
+
+client = OpenAI(
+    base_url=endpoint,
+    api_key=token,
+)
+
+response = client.chat.completions.create(
+    messages=[
+        {
+            "role": "system",
+            "content": "You are a helpful assistant.",
+        },
+        {
+            "role": "user",
+            "content": "What is the capital of France?",
+        }
+    ],
+    temperature=1.0,
+    top_p=1.0,
+    max_tokens=1000,
+    model=model_name
+)
+
+print(response.choices[0].message.content)
+
+API_GITHUB_TOKEN = os.getenv("API_GITHUB_TOKEN")
+
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-# Set up your tokens from environment variables
-API_GITHUB_TOKEN = os.getenv("API_GITHUB_TOKEN")
+
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
-# Configure OpenAI API
-openai.api_key = API_GITHUB_TOKEN
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text('Olá! Eu sou seu assistente. Como posso ajudá-lo hoje?')
-
-async def respond(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user_message = update.message.text
-    response = await get_openai_response(user_message)
-    await update.message.reply_text(response)
-
-async def get_openai_response(message: str) -> str:
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4o-mini",  # You can change this to any model you want
-            messages=[
-                {"role": "user", "content": message}
-            ]
-        )
-        return response.choices[0].message.content
-    except Exception as e:
-        return f"Desculpe, houve um erro: {str(e)}"
 
 def main() -> None:
     # Create the application
