@@ -1,2 +1,2 @@
-openai
+openai migrate
 python-telegram-bot
