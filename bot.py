@@ -4,9 +4,6 @@ from openai import OpenAI
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-# Define the SlimIAData class
-class SlimIAData:
-    # (Copy the entire implementation from slim_ia_data.py here)
 def carregar_conteudo_arquivo():
     # Abre e lê o conteúdo do arquivo
     with open("conteudo_site.txt", "r", encoding="utf-8") as file:
@@ -163,9 +160,6 @@ class SlimIAData:
     # Método para obter uma mensagem motivacional aleatória
     def get_mensagem_motivacional(self):
         return random.choice(self.mensagens_motivacionais)
-
-# Create an instance of SlimIAData
-slim_ia_data = SlimIAData()
 
 # Configurar os tokens a partir das variáveis de ambiente
 API_GITHUB_TOKEN = os.getenv("API_GITHUB_TOKEN")
